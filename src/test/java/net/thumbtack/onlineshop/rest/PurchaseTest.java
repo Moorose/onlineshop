@@ -519,8 +519,8 @@ public class PurchaseTest {
         ResponseEntity<ReportResponse> reportResponse = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, addRequestEntity, ReportResponse.class);
         assertEquals(HttpStatus.OK, reportResponse.getStatusCode());
         reportResponse.getBody().getReportRows().forEach(System.out::println);
-        System.out.println("getTotalPrise = " + reportResponse.getBody().getTotalPrise());
-        System.out.println("getTotalCount = " + reportResponse.getBody().getTotalCount());
+//        System.out.println("getTotalPrise = " + reportResponse.getBody().getTotalPrise());
+//        System.out.println("getTotalCount = " + reportResponse.getBody().getTotalCount());
         assertEquals(0, reportResponse.getBody().getTotalPrise());
         assertEquals(2, reportResponse.getBody().getTotalCount());
         assertNotNull(reportResponse.getBody().getReportRows().get(0).getCategory().get(getCategoryResponse.getBody().get(0).getId()));
