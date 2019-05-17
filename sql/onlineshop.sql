@@ -1,0 +1,87 @@
+DROP DATABASE IF EXISTS onlineshop;
+CREATE DATABASE onlineshop;
+USE onlineshop;
+
+CREATE TABLE user (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    login VARCHAR(30) NOT NULL UNIQUE,
+    password VARCHAR(30) NOT NULL,
+    firstname VARCHAR(30) NOT NULL,
+    lastname VARCHAR(30) NOT NULL,
+    patronymic VARCHAR(30) NULL,
+    PRIMARY KEY (id)
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE admin (
+    id INT(11) NOT NULL,
+    position VARCHAR(30) NOT NULL,
+    FOREIGN KEY (id) REFERENCES user (id) ON DELETE CASCADE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE client (
+    id INT(11) NOT NULL,
+	email VARCHAR(30) NOT NULL UNIQUE,
+    address VARCHAR(30) NOT NULL,
+    phone VARCHAR(30) NOT NULL UNIQUE,
+    FOREIGN KEY (id) REFERENCES user (id) ON DELETE CASCADE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE deposit (
+    id INT(11) NOT NULL,
+	money INT(11) NOT NULL,
+	version INT(11) NOT NULL,
+	FOREIGN KEY (id) REFERENCES client (id) ON DELETE CASCADE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE category (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    category_name VARCHAR(30)NOT NULL UNIQUE,
+    root_id INT(11) NULL,
+    PRIMARY KEY (id),
+	FOREIGN KEY (root_id) REFERENCES category (id) ON DELETE CASCADE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE product (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    product_name VARCHAR(50) NOT NULL,
+    product_price INT(11) NOT NULL,
+    product_count INT(11) NOT NULL,
+    deleted TINYINT NOT NULL,
+    version INT(11) NOT NULL,
+    PRIMARY KEY (id)
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE purchase (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    client_id INT(11) NOT NULL,
+    product_id INT(11),
+    purchase_name VARCHAR(50) NOT NULL,
+    purchase_price INT(11) NOT NULL,
+    product_count INT(11) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (client_id) REFERENCES client (id),
+    FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE SET NULL
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE product_category (
+    product_id INT(11) NOT NULL,
+    category_id INT(11) NOT NULL,
+    UNIQUE (product_id , category_id),
+    FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE basket_item (
+    client_id INT(11) NOT NULL,
+    product_id INT(11),
+    count_product INT(11) NOT NULL,
+    UNIQUE (product_id , client_id),
+    FOREIGN KEY (client_id) REFERENCES client (id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE SET NULL
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE server_session (
+    id INT(11) NOT NULL,
+    token VARCHAR(40) NOT NULL UNIQUE,
+    FOREIGN KEY (id) REFERENCES user (id) ON DELETE CASCADE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8;
